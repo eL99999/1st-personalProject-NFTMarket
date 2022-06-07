@@ -1,7 +1,8 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
@@ -62,8 +63,8 @@ contract Exchange is Ownable, ReentrancyGuard {
             true
         );
 
-        _nftContract.setApprovalForAll(address(this), true);
-        _nftContract.transferFrom(msg.sender, address(this), _tokenId);
+        IERC721(_nftContract).setApprovalForAll(address(this), true);
+        IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
 
         emit itemListed (
             _nftContract,
@@ -77,7 +78,7 @@ contract Exchange is Ownable, ReentrancyGuard {
 
     // sale function / event w buyer
     function sale(address _nftContract, uint _tokenId) public payable {
-        Items thisItem = mapItems[_nftContract][_tokenId];
+        Items memory thisItem = mapItems[_nftContract][_tokenId];
         uint fee = (thisItem.price * feePercentage) / 100;
         uint price = thisItem.price;
         address seller = thisItem.seller;
@@ -85,9 +86,9 @@ contract Exchange is Ownable, ReentrancyGuard {
 
         payable(owner).transfer(fee);
         payable(seller).transfer(price);
-        _nftContract.transferFrom(address(this), msg.sender, _tokenId);
+        IERC721(_nftContract).transferFrom(address(this), msg.sender, _tokenId);
 
-        emit sold (
+        emit itemSold (
             _nftContract,
             _tokenId,
             seller,
@@ -98,14 +99,36 @@ contract Exchange is Ownable, ReentrancyGuard {
         );
     }
 
-    // fetch all items in an nft collection function
+    // fetch all items in an nft collection function, this should be done in the client side, 
 
     /* fetch all marketitems (buy now) in an nft collection function 
     make a 'listed' prop in the struct, know the array size always */
 
+    // still deciding whether to pass in nft/no.of nfts, or just pass in an array, think array is better.
+    function buyNow(address _nftContract, uint _totalNfts) public view returns(Items[] memory) {
+        //find all listed-true items and filter by nft contract, get the array size
+        uint arraySize = 0;
+        for (uint i = 1; i < _totalNfts; i++) {
+            if (mapItems[_nftContract][i].listed == true) {
+                arraySize++;
+            }
+        }
+
+        // declare memory array 
+        Items[] memory items = new Items[](arraySize);
+
+        // return buyNow array, map overthem in JS clientside 
+        uint currentIndex = 0;
+
+        for (uint i = 1; i <= _totalNfts; i++) {
+            if (mapItems[_nftContract][i].listed == true) {
+                items[currentIndex] = mapItems[_nftContract][i];
+                currentIndex++;
+            }
+        }
+
+        return items;
+    }
+
 
 }
-
-monkey.setapprovalforall()
-mayc.setapprovalforall()
-mayc.tranfserfrom()

@@ -11,7 +11,8 @@ module.exports = {
       accounts: []
     },
     mainnet: {
-
+      url: "",
+      accounts: []
     }
   },
   solidity: "0.8.4"
