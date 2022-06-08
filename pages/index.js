@@ -2,8 +2,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
+import { ethers } from 'ethers'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import Web3Modal from 'web3modal'
 
 export default function Home() {
+  
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,29 +19,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>
-        <nav>
-          <Link href='./index'>
-            <a className='absolute top-4 right-96 m-6 px-4 border-2 text-purple-500'>
-              Home
-            </a>
-          </Link>
-          <Link href='./collections'>
-            <a className='absolute top-4 right-56 m-6 px-4 border-2 text-purple-600'>
-              Collections
-            </a>
-          </Link>
-          <Link href='./user'>
-            <a className='absolute top-20 right-16 m-6 px-4 border-4 border-solid border-blue-200'>
-              My profile
-            </a>
-          </Link>
 
-        </nav>
-
-        <button className='absolute top-4 right-10 m-6 border-2 px-4 border-solid border-slate-300 hover:border-indigo-300 text-purple-400'>
-          Connect Wallet</button>
-      </div>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
@@ -42,8 +27,8 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+          check out my {``}
+          <code className={styles.code}>website</code>
         </p>
 
         <div className={styles.grid}>
