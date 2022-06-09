@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
 contract Exchange is Ownable, ReentrancyGuard {
 
     address payable owner;
@@ -87,6 +86,7 @@ contract Exchange is Ownable, ReentrancyGuard {
         payable(owner).transfer(fee);
         payable(seller).transfer(price);
         IERC721(_nftContract).transferFrom(address(this), msg.sender, _tokenId);
+
 
         emit itemSold (
             _nftContract,

@@ -8,7 +8,7 @@ export default function Collectionos() {
             <div>
             <img href='./collections/download(1).jpg' />
 
-                <Link href='./collections/bayc'>
+                <Link href='./collections/McNFT'>
 
                     <a>Bored Ape Yacht Club</a>
                 </Link>
