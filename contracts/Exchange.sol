@@ -3,20 +3,27 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Exchange is Ownable, ReentrancyGuard {
-
+contract Exchange is ReentrancyGuard {
     address payable owner;
     uint public feePercentage;
 
     constructor(uint _feePercentage) {
-        owner = payable(msg.sender);
         feePercentage = _feePercentage;
+        owner = payable(msg.sender);
     }
 
     function changeFee(uint _newFeePercentage) public onlyOwner() {
         feePercentage = _newFeePercentage;
+    }
+
+    modifier onlyOwner() {
+        require(owner == msg.sender, "caller is not the owner");
+        _;
+    }
+
+    function transferOwnership(address payable _newOwner) public virtual onlyOwner {
+        owner = _newOwner;
     }
 
     struct Items {
@@ -83,7 +90,7 @@ contract Exchange is Ownable, ReentrancyGuard {
         address seller = thisItem.seller;
         require(msg.value == price + fee, "please submit the asking price");
 
-        payable(owner).transfer(fee);
+        owner.transfer(fee);
         payable(seller).transfer(price);
         IERC721(_nftContract).transferFrom(address(this), msg.sender, _tokenId);
 
