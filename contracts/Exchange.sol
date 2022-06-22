@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract Exchange is ReentrancyGuard {
     address payable owner;
@@ -22,7 +23,7 @@ contract Exchange is ReentrancyGuard {
         _;
     }
 
-    function transferOwnership(address payable _newOwner) public virtual onlyOwner {
+    function transferOwnership(address payable _newOwner) public onlyOwner {
         owner = _newOwner;
     }
 

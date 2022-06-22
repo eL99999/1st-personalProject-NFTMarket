@@ -5,9 +5,9 @@ import Web3Modal from 'web3modal'
 
 import {
     exchangeAddress
-} from './config.js'
+} from './config.js.js'
 
-export default function McNFT() {
+export default function community() {
 
     const [nftsArray, setnftsArray] = useState([])
 

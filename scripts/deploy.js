@@ -15,22 +15,22 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Exchange = await hre.ethers.getContractFactory("Exchange");
-  const exchange = await Exchange.deploy(2);
+  const Core = await hre.ethers.getContractFactory("Core");
+  const core = await Core.deploy(0);
 
-  await exchange.deployed();
+  await core.deployed();
 
-  console.log("exchange deployed to:", exchange.address);
+  console.log("Core deployed to:", core.address);
 
-  const McNFT = await hre.ethers.getContractFactory("McNFT");
-  const Mcnft = await McNFT.deploy();
+  const McNFTenjoyer = await hre.ethers.getContractFactory("McNFTenjoyer");
+  const Mcnft = await McNFTenjoyer.deploy();
 
   await Mcnft.deployed();
 
-  console.log("MF deployed to:", Mcnft.address);
+  console.log("MFer deployed to:", Mcnft.address);
 
   fs.writeFileSync('./config.js', `
-    export const exchangeAddress = "${exchange.address}"
+    export const coreAddress = "${core.address}"
     export const nftAddress = "${Mcnft.address}"
   `)
 }
