@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract McNFTenjoyer is ERC721URIStorage {
     address payable owner;
-    using Counters for Counters.Counter;
     uint public tokenId;
 
     constructor() ERC721("McNFTenjoyer", "MFer") {
@@ -19,7 +18,7 @@ contract McNFTenjoyer is ERC721URIStorage {
         _setTokenURI(tokenId, tokenURI);
         return tokenId;
     }
-    
+
     modifier onlyOwner() {
         require(owner == msg.sender, "caller is not the owner");
         _;

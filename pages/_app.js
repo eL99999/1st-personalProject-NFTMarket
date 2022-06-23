@@ -31,6 +31,11 @@ function MyApp({ Component, pageProps }) {
               Collections
             </a>
           </Link>
+          <Link href='./tryit'>
+            <a className='absolute top-20 right-80 m-6 px-4 border-4 border-solid border-blue-200'>
+              Try It
+            </a>
+          </Link>
           <Link href='./my'>
             <a className='absolute top-20 right-16 m-6 px-4 border-4 border-solid border-blue-200'>
               My profile

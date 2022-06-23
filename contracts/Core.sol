@@ -33,8 +33,9 @@ contract Core is ReentrancyGuard {
 
     // struct for items
     struct Item {
-        uint tokenId;
+        uint itemId;
         address nftAddress;
+        uint tokenId;
         address payable creator;
         address payable seller;
         address owner;
@@ -107,12 +108,13 @@ contract Core is ReentrancyGuard {
         );
     }
 
-    function listItem(address _nft, uint _price) public {
+    function listItem(address _nft, uint _tokenId, uint _price) public {
         registerCreator();
         tokenCount++;
         idToItem[tokenCount] = Item (
             tokenCount,
             _nft,
+            _tokenId,
             payable(msg.sender),
             payable(msg.sender),
             msg.sender,
@@ -124,6 +126,7 @@ contract Core is ReentrancyGuard {
         creatorToItem[msg.sender][creator.currentItemId] = Item (
             tokenCount,
             _nft,
+            _tokenId,
             payable(msg.sender),
             payable(msg.sender),
             msg.sender,
@@ -131,7 +134,6 @@ contract Core is ReentrancyGuard {
             true
         );
 
-        IERC721(_nft).setApprovalForAll(address(this), true);
         IERC721(_nft).transferFrom(msg.sender, address(this), tokenCount);
     }
 
@@ -167,7 +169,7 @@ contract Core is ReentrancyGuard {
         }
         return items;
     }
-    
+
     function fetchMyNFTs(address _address) public view returns (Item[] memory) {
         Creator storage creator = addressToCreator[_address];
         Item[] memory items = new Item[](creator.currentItemId);
