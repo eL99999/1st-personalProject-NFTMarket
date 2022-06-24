@@ -34,7 +34,7 @@ contract Core is ReentrancyGuard {
     // struct for items
     struct Item {
         uint itemId;
-        address nftAddress;
+        IERC721 nftAddress;
         uint tokenId;
         address payable creator;
         address payable seller;
@@ -108,7 +108,7 @@ contract Core is ReentrancyGuard {
         );
     }
 
-    function listItem(address _nft, uint _tokenId, uint _price) public {
+    function listItem(IERC721 _nft, uint _tokenId, uint _price) external nonReentrant {
         registerCreator();
         tokenCount++;
         idToItem[tokenCount] = Item (
@@ -134,7 +134,7 @@ contract Core is ReentrancyGuard {
             true
         );
 
-        IERC721(_nft).transferFrom(msg.sender, address(this), tokenCount);
+        _nft.transferFrom(msg.sender, address(this), tokenCount);
     }
 
     function cancelListing(uint _tokenId) public {

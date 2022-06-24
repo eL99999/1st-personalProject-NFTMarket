@@ -7,14 +7,16 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001')
 
 import {
     nftAddress, coreAddress
-} from '../config'
+} from '../config.js'
 
 import McNFTenjoyer from '../artifacts/contracts/McNFTenjoyer.sol/McNFTenjoyer.json'
 import Core from '../artifacts/contracts/Core.sol/Core.json'
 
 export default function TryIt() {
     const [fileUrl, setFileUrl] = useState(null)
-    const [input, setInput] = useState({ price: '', name: '', description: '' })
+    const [price, setPrice] = useState(null)
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
 
     async function onChange(event) {
         const file = event.target.files[0]
@@ -28,8 +30,7 @@ export default function TryIt() {
     }
 
     async function uploadToIpfs() {
-        const { price, name, description } = input
-        if (!price || !fileUrl) return
+        if (!price || !fileUrl || !name || !description) return
         const data = JSON.stringify({
             name, description, image: fileUrl
         })
@@ -49,14 +50,14 @@ export default function TryIt() {
         const provider = new ethers.providers.Web3Provider(instance)
         const signer = provider.getSigner()
 
-        const nftContract = new ethers.Contract(nftAddress, McNFTenjoyer.abi, signer)
-        const coreContract = new ethers.Contract(coreAddress, Core.abi, signer)
-        const price = ethers.utils.parseUnits(input.price, 'ether')
+        let nftContract = new ethers.Contract(nftAddress, McNFTenjoyer.abi, signer)
+        let coreContract = new ethers.Contract(coreAddress, Core.abi, signer)
+        const _price = ethers.utils.parseEther(price.toString())
 
         await(await nftContract.mint(tokenUrl)).wait()
-        await(await nftContract.setApprovalForAll(coreContract, true)).wait()
+        await(await nftContract.setApprovalForAll(coreAddress, true)).wait()
         const tokenId = await nftContract.tokenId()
-        await(await coreContract.listItem(nftAddress, tokenId, price)).wait()
+        await(await coreContract.listItem(nftAddress, tokenId, _price)).wait()
 
     }
 
@@ -66,17 +67,17 @@ export default function TryIt() {
         <input 
           placeholder="Asset Name"
           className="mt-8 border rounded p-4"
-          onChange={e => setInput({ name: e.target.value })}
+          onChange={e => setName(e.target.value)}
         />
         <textarea
           placeholder="Asset Description"
           className="mt-2 border rounded p-4"
-          onChange={e => setInput({ description: e.target.value })}
+          onChange={e => setDescription(e.target.value)}
         />
         <input
           placeholder="Asset Price in Eth"
           className="mt-2 border rounded p-4"
-          onChange={e => setInput({ price: e.target.value })}
+          onChange={e => setPrice(e.target.value )}
         />
         <input
           type="file"
