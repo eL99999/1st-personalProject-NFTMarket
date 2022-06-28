@@ -8,9 +8,9 @@ export default function Creators() {
             <div>
             <img href='./collections/download(1).jpg' />
 
-                <Link href='./collections/McNFT'>
+                <Link href='./creators/community'>
 
-                    <a>Bored Ape Yacht Club</a>
+                    <a>community</a>
                 </Link>
             </div>
 

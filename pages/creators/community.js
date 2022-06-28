@@ -4,12 +4,15 @@ import axios from 'axios'
 import Web3Modal from 'web3modal'
 
 import {
-    exchangeAddress
-} from './config.js.js'
+    coreAddress, nftAddress
+} from '../../config'
+
+import McNFTenjoyer from '../../artifacts/contracts/McNFTenjoyer.sol/McNFTenjoyer.json'
+import Core from '../../artifacts/contracts/Core.sol/Core.json'
 
 export default function community() {
 
-    const [nftsArray, setnftsArray] = useState([])
+    const [nfts, setNfts] = useState([])
 
     useEffect(() => {
         loadNfts()
@@ -20,16 +23,14 @@ export default function community() {
     // a function that triggers sc sale function 
 
     // a function that triggers 'buy now' function which gets array loaded & stored, then return that array on display
-    function loadNfts() {
+    async function loadNfts() {
         //web 3 modal stuff, get signer to get the contract
-        const web3Modal = new Web3Modal
-        const instance = await web3Modal.connect()
-        const provider = new ethers.providers.Web3Provider(instance)
+        const provider = new ethers.providers.JsonRpcProvider()
 
-        const contract = new ethers.Contract(exchangeAddress, Exchange.abi, provider)
-        const nfts = await contract.buyNow(nftContract, 10)
+        const contract = new ethers.Contract(coreAddress, Core.abi, provider)
+        const nfts = await contract.fetchBrowse()
 
-        const nftContract = new ethers.Contract(nftAddress, McNFT.abi, provider) //only need signer for signing transactions,
+        const nftContract = new ethers.Contract(nftAddress, McNFTenjoyer.abi, provider) //only need signer for signing transactions,
 
         //contract.buyNow
 
@@ -49,15 +50,15 @@ export default function community() {
             }
             return item
         }))
-        setnftsArray[items]
+        setNfts(items)
     }
 
-    function buyNfts(nft) {
+    async function buyNfts(nft) {
 
         const web3Modal = new Web3Modal
         const instance = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(instance)
-        const signer = await provider.getSigner()
+        const signer = provider.getSigner()
 
         const contract = new ethers.Contract(exchangeAddress, Exchange.abi, signer)
         const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
@@ -75,7 +76,7 @@ export default function community() {
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4'>
                     {
                         nfts.map((nft, index) => (
-                            <div key={i} className='border shadow rounded-xl overflow-hidden'>
+                            <div key={index} className='border shadow rounded-xl overflow-hidden'>
                                 <img src={nft.image} />
                                 <div className='p-4'>
                                     <p style={{ height: '64px' }} className='text-2xl font-semibold'>{nft.name}</p>
@@ -87,7 +88,7 @@ export default function community() {
 
                                 <div className='p-4 bg-black'>
                                     <p className='text-2xl font-bold text-white'>{nft.price} ETH</p>
-                                    <button className='mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded' onClick={() => buynft(nft)}>Buy</button>
+                                    <button className='mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded' onClick={() => buyNfts(nft)}>Buy</button>
                                 </div>
 
                             </div>    
